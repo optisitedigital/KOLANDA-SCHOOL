@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard École - Gestion des paiements</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+
+<!-- ECRAN DE CONNEXION -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <h1>🎓 Dashboard École</h1>
+    <p class="subtitle">Connexion administrateur</p>
+    <input type="password" id="passwordInput" placeholder="Mot de passe" autocomplete="current-password">
+    <button id="loginBtn" class="btn btn-primary">Se connecter</button>
+    <p id="loginError" class="error-msg"></p>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="dashboard hidden">
+
+  <header class="topbar">
+    <h1>🎓 Gestion École</h1>
+    <button id="logoutBtn" class="btn btn-ghost">Déconnexion</button>
+  </header>
+
+  <main class="content">
+
+    <!-- RESUME -->
+    <section class="summary-grid">
+      <div class="card summary-card">
+        <span class="summary-label">Argent actuel de l'école</span>
+        <span class="summary-value" id="sumArgentActuel">0</span>
+      </div>
+      <div class="card summary-card">
+        <span class="summary-label">Reste à percevoir</span>
+        <span class="summary-value warn" id="sumReste">0</span>
+      </div>
+      <div class="card summary-card">
+        <span class="summary-label">Nombre d'élèves</span>
+        <span class="summary-value" id="sumEleves">0</span>
+      </div>
+    </section>
+
+    <!-- VUE CLASSES -->
+    <section id="classesView">
+      <div class="section-header">
+        <h2>Classes</h2>
+        <button id="addStudentGlobalBtn" class="btn btn-primary">+ Inscrire un élève</button>
+      </div>
+      <div id="classesGrid" class="classes-grid"></div>
+    </section>
+
+    <!-- VUE ELEVES D'UNE CLASSE -->
+    <section id="studentsView" class="hidden">
+      <div class="section-header">
+        <button id="backToClassesBtn" class="btn btn-ghost">← Retour aux classes</button>
+      </div>
+      <div class="section-header">
+        <h2 id="studentsClassTitle">Classe</h2>
+        <div class="actions-group">
+          <button id="printPdfBtn" class="btn btn-secondary">🖨️ Imprimer en PDF</button>
+          <button id="addStudentClassBtn" class="btn btn-primary">+ Ajouter un élève</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table id="studentsTable">
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Prénom</th>
+              <th>Total dû</th>
+              <th>Payé</th>
+              <th>Reste</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="studentsTableBody"></tbody>
+          <tfoot>
+            <tr class="totals-row">
+              <td colspan="2">Total classe</td>
+              <td id="classTotalDu">0</td>
+              <td id="classTotalPaye">0</td>
+              <td id="classTotalReste">0</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- MODAL AJOUT / MODIFICATION -->
+<div id="studentModal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <h2 id="modalTitle">Inscrire un élève</h2>
+    <input type="hidden" id="studentId">
+
+    <label>Nom</label>
+    <input type="text" id="fNom" placeholder="Nom">
+
+    <label>Prénom</label>
+    <input type="text" id="fPrenom" placeholder="Prénom">
+
+    <label>Classe</label>
+    <input type="text" id="fClasse" list="classesList" placeholder="Ex: 3ème A">
+    <datalist id="classesList"></datalist>
+
+    <label>Montant total dû</label>
+    <input type="number" id="fMontantTotal" placeholder="0">
+
+    <label>Montant déjà payé</label>
+    <input type="number" id="fMontantPaye" placeholder="0">
+
+    <label>Téléphone (optionnel)</label>
+    <input type="text" id="fTelephone" placeholder="Téléphone du parent">
+
+    <p id="modalError" class="error-msg"></p>
+
+    <div class="modal-actions">
+      <button id="deleteStudentBtn" class="btn btn-danger hidden">Supprimer</button>
+      <div class="modal-actions-right">
+        <button id="cancelModalBtn" class="btn btn-ghost">Annuler</button>
+        <button id="saveStudentBtn" class="btn btn-primary">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
